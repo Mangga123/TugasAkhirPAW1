@@ -1,73 +1,50 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
+            {{ __('Admin Dashboard - Sistem Akademik') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
-            <!-- Bagian Statistik -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <!-- Card 1: Total Unit -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-500">
-                    <div class="text-gray-500 text-sm uppercase font-bold tracking-wider">Total Unit</div>
-                    <div class="text-3xl font-bold text-gray-800 mt-2">{{ $totalUnits }}</div>
+                    <div class="text-gray-500 text-sm font-medium">TOTAL PENGGUNA</div>
+                    <div class="text-3xl font-bold text-gray-800">{{ \App\Models\User::count() }}</div>
                 </div>
 
-                <!-- Card 2: Unit Terisi -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-green-500">
-                    <div class="text-gray-500 text-sm uppercase font-bold tracking-wider">Unit Terisi</div>
-                    <div class="text-3xl font-bold text-green-600 mt-2">{{ $occupiedUnits }}</div>
+                    <div class="text-gray-500 text-sm font-medium">MAHASISWA</div>
+                    <div class="text-3xl font-bold text-gray-800">{{ \App\Models\User::where('role', 'mahasiswa')->count() }}</div>
                 </div>
 
-                <!-- Card 3: Total Penghuni -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-indigo-500">
-                    <div class="text-gray-500 text-sm uppercase font-bold tracking-wider">Total Penghuni</div>
-                    <div class="text-3xl font-bold text-indigo-600 mt-2">{{ $totalResidents }}</div>
-                </div>
-
-                <!-- Card 4: Komplain Pending -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-red-500">
-                    <div class="text-gray-500 text-sm uppercase font-bold tracking-wider">Komplain Baru</div>
-                    <div class="text-3xl font-bold text-red-600 mt-2">{{ $pendingComplaints }}</div>
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-yellow-500">
+                    <div class="text-gray-500 text-sm font-medium">DOSEN</div>
+                    <div class="text-3xl font-bold text-gray-800">{{ \App\Models\User::where('role', 'dosen')->count() }}</div>
                 </div>
             </div>
 
-            <!-- Bagian Menu Cepat (Quick Actions) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-bold mb-4 text-gray-700">🔧 Kelola Apartemen</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <h3 class="text-lg font-bold mb-4">Menu Kelola Akademik</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         
-                        <!-- Tombol 1: Kelola Unit -->
-                        <a href="{{ route('admin.units.index') }}" class="flex items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group cursor-pointer">
-                            <div class="text-center">
-                                <span class="text-3xl mb-2 block">🏢</span>
-                                <span class="font-bold text-gray-600 group-hover:text-blue-600">Kelola Data Unit</span>
-                            </div>
+                        <a href="{{ route('mahasiswa.index') }}" class="block border p-4 rounded hover:bg-blue-50 cursor-pointer transition transform hover:-translate-y-1 hover:shadow-md">
+                            <h4 class="font-bold text-blue-600 text-lg">📁 Data Mahasiswa</h4>
+                            <p class="text-sm text-gray-500 mt-1">Kelola data mahasiswa aktif, angkatan, dan akun.</p>
                         </a>
-
-                        <!-- Tombol 2: Kelola Penghuni -->
-                        <a href="{{ route('admin.residents.index') }}" class="flex items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition group cursor-pointer">
-                            <div class="text-center">
-                                <span class="text-3xl mb-2 block">👥</span>
-                                <span class="font-bold text-gray-600 group-hover:text-green-600">Kelola Penghuni</span>
-                            </div>
-                        </a>
-
-                        <!-- Tombol 3: Kelola Tagihan (SUDAH DIAKTIFKAN ✅) -->
-                        <a href="{{ route('admin.bills.index') }}" class="flex items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition group cursor-pointer">
-                            <div class="text-center">
-                                <span class="text-3xl mb-2 block">📄</span>
-                                <span class="font-bold text-gray-600 group-hover:text-indigo-600">Kelola Tagihan</span>
-                            </div>
+                        
+                        <a href="{{ route('dosen.index') }}" class="block border p-4 rounded hover:bg-blue-50 cursor-pointer transition transform hover:-translate-y-1 hover:shadow-md">
+                            <h4 class="font-bold text-blue-600 text-lg">🎓 Data Dosen</h4>
+                            <p class="text-sm text-gray-500 mt-1">Kelola data dosen, NIP, dan departemen pengajar.</p>
                         </a>
 
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </x-app-layout>

@@ -12,19 +12,23 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * DAFTAR KOLOM YANG BOLEH DIISI (WHITELIST)
-     * Ini yang menyebabkan error tadi jika belum didaftarkan.
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
      */
     protected $fillable = [
-        'role_id',  // ✅ Wajib ada agar bisa set role
         'name',
         'email',
         'password',
-        'phone',    // ✅ Wajib ada agar bisa simpan No HP
+        'role',
+        'department_id',
+        'angkatan',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -33,6 +37,8 @@ class User extends Authenticatable
 
     /**
      * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -42,30 +48,8 @@ class User extends Authenticatable
         ];
     }
 
-    // ================= RELASI & HELPER =================
-
-    /**
-     * Relasi: User punya satu Role
-     */
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    /**
-     * Helper: Cek apakah user adalah Admin
-     * Dipakai di middleware & redirect dashboard
-     */
     public function isAdmin()
     {
-        return $this->role && $this->role->role_name === 'Admin';
-    }
-
-    /**
-     * Relasi: User (Warga) punya satu data Resident
-     */
-    public function resident()
-    {
-        return $this->hasOne(Resident::class);
+        return $this->role === 'admin';
     }
 }

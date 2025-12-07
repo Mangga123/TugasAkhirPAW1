@@ -6,22 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('content');
+
+            $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             
-            // Relasi ke users (Admin yang buat pengumuman)
-            $table->foreignId('user_id')->constrained('users');
-            
-            $table->string('title', 100); 
-            $table->text('message');
+            $table->foreignId('target_department_id')->nullable()->constrained('departments')->onDelete('cascade');
+
+            $table->year('target_angkatan')->nullable(); 
             
             $table->timestamps();
         });
     }
 
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('announcements');
     }
