@@ -7,15 +7,31 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            <div class="mb-4">
+                <a href="{{ route('dashboard') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-bold transition">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Kembali ke Dashboard
+                </a>
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-bold">Daftar Dosen Pengajar</h3>
-                        <a href="{{ route('dosen.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <a href="{{ route('dosen.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition">
                             + Tambah Dosen
                         </a>
                     </div>
+
+                    @if(session('success'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                        {{ session('success') }}
+                    </div>
+                    @endif
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white border border-gray-200">
@@ -41,14 +57,14 @@
                                     </td>
                                     <td class="py-3 px-6 text-center">
                                         <div class="flex item-center justify-center">
-                                            <a href="{{ route('dosen.edit', $dsn->id) }}" class="text-yellow-500 hover:text-yellow-700 font-bold mr-2">
+                                            <a href="{{ route('dosen.edit', $dsn->id) }}" class="text-yellow-500 hover:text-yellow-700 font-bold mr-3 transition">
                                                 Edit
                                             </a>
                                             
                                             <form action="{{ route('dosen.destroy', $dsn->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data dosen ini?');" style="display: inline-block;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700 font-bold">
+                                                <button type="submit" class="text-red-500 hover:text-red-700 font-bold transition">
                                                     Hapus
                                                 </button>
                                             </form>
@@ -57,8 +73,8 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="py-6 px-6 text-center text-gray-400">
-                                        Belum ada data dosen.
+                                    <td colspan="4" class="py-6 px-6 text-center text-gray-400 bg-gray-50">
+                                        Belum ada data dosen. Silakan tambah data baru.
                                     </td>
                                 </tr>
                                 @endforelse
