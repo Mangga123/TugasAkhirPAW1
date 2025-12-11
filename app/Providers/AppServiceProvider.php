@@ -19,16 +19,20 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+public function boot(): void
     {
-        // ATURAN GLOBAL:
-        // Jika user sudah login tapi nyasar ke halaman login lagi,
-        // Jangan lempar ke /dashboard, tapi cek dulu role-nya.
-        
         RedirectIfAuthenticated::redirectUsing(function () {
-            if (Auth::user() && Auth::user()->isAdmin()) {
+            $user = Auth::user();
+
+            if ($user->isAdmin()) {
                 return route('dashboard');
             }
+            
+            // Tambahkan Cek Dosen
+            if ($user->isDosen()) {
+                return route('dosen.dashboard');
+            }
+
             return route('student.dashboard');
         });
     }

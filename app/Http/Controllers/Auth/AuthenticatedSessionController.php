@@ -19,16 +19,19 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
 
-    public function store(LoginRequest $request): RedirectResponse
+public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
         $request->session()->regenerate();
 
-        // LOGIKA PAKSAAN
         if ($request->user()->isAdmin()) {
             return redirect()->route('dashboard'); 
         }
-        
+
+        if ($request->user()->isDosen()) {
+            return redirect()->route('dosen.dashboard');
+        }
+
         return redirect()->route('student.dashboard');
     }
 

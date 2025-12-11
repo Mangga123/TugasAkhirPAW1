@@ -31,4 +31,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get('/pesan/buat', [App\Http\Controllers\MessageController::class, 'create'])->name('messages.create');
+    Route::post('/pesan/kirim', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
+    Route::get('/pesan/masuk', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
+    Route::get('/pesan/baca/{id}', [App\Http\Controllers\MessageController::class, 'show'])->name('messages.show');
+    Route::get('/dosen-dashboard', function () {
+        if (!auth()->user()->isDosen()) {
+            abort(403, 'Khusus Dosen');
+        }
+        return view('dosen.dashboard'); 
+    })->name('dosen.dashboard');
+});
 require __DIR__.'/auth.php';
