@@ -19,12 +19,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, bcmath, gd, mysql
-
-      - name: Setup Node.js
+          extensions: mbstring, bcmath, gd, mysql      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
 
       # Laravel optimization: Install production dependencies
       - name: Run composer install
@@ -32,10 +31,19 @@ jobs:
           composer install --no-dev --optimize-autoloader --prefer-dist --no-progress
 
       - name: Install npm dependencies
-        run: npm install
-
-      - name: Build Vite assets
+        run: npm ci      - name: Build Vite assets
         run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Verify Vite build output
+        run: |
+          if [ ! -f "public/build/manifest.json" ]; then
+            echo "Error: Vite manifest not found!"
+            ls -la public/build/ || echo "Build directory doesn't exist"
+            exit 1
+          fi
+          echo "✓ Vite build successful"
 
       # IMPORTANT: Verify the 'default' file exists before uploading
       - name: Verify Nginx config exists
