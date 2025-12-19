@@ -64,14 +64,14 @@
 
             <nav class="space-y-2 px-2">
                 
-                <a href="{{ route('dashboard') }}" class="group relative flex items-center px-4 py-3 font-medium transition-all">
-                     @if(request()->routeIs('dashboard'))
+                <a href="{{ route('dosen.dashboard') }}" class="group relative flex items-center px-4 py-3 font-medium transition-all">
+                     @if(request()->routeIs('dosen.dashboard'))
                         <div class="absolute left-0 h-8 w-1.5 bg-active-theme rounded-r-full"></div>
                     @endif
-                    <span class="ml-4 {{ request()->routeIs('dashboard') ? 'text-gray-900 font-bold' : 'text-gray-600 hover-theme' }}">
+                    <span class="ml-4 {{ request()->routeIs('dosen.dashboard') ? 'text-gray-900 font-bold' : 'text-gray-600 hover-theme' }}">
                         Dashboard
                     </span>
-                    @if(request()->routeIs('dashboard')) <span class="ml-2 w-2 h-2 bg-active-theme rounded-full"></span> @endif
+                    @if(request()->routeIs('dosen.dashboard')) <span class="ml-2 w-2 h-2 bg-active-theme rounded-full"></span> @endif
                 </a>
 
                 <a href="{{ route('messages.create') }}" class="group relative flex items-center px-4 py-3 font-medium transition-all">

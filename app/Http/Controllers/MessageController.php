@@ -9,16 +9,21 @@ use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
+    // 1. INBOX (KOTAK MASUK)
     public function index()
     {
-        $messages = Message::where('receiver_id', Auth::id())->with('sender')->latest()->get();
+        $messages = Message::where('receiver_id', Auth::id())
+                            ->with('sender')
+                            ->latest()
+                            ->get();
+
         return view('messages.index', compact('messages'));
     }
 
-    // --- UPDATE 1: Ambil Data Angkatan ---
+    // 2. HALAMAN BUAT PESAN
     public function create()
     {
-        // Ambil daftar tahun angkatan yang ada di database (unik & urut dari terbaru)
+        // Ambil angkatan untuk dropdown filter (Khusus Dosen)
         $angkatans = User::where('role', 'mahasiswa')
                          ->whereNotNull('angkatan')
                          ->distinct()
@@ -28,36 +33,38 @@ class MessageController extends Controller
         return view('messages.create', compact('angkatans'));
     }
 
-    // --- UPDATE 2: Logika Kirim Per Angkatan ---
+    // 3. PROSES KIRIM PESAN (INI YANG KITA PERBAIKI)
     public function store(Request $request)
     {
         $request->validate([
             'subject' => 'required|string|max:255',
-            'body' => 'required|string',
+            'body' => 'required|string', // Di Form namanya 'body'
             'receiver_role' => 'required|string',
-            'angkatan' => 'nullable|string', // Validasi baru untuk angkatan
+            'angkatan' => 'nullable|string',
         ]);
 
         $senderId = Auth::id();
 
-        // LOGIKA PENGIRIMAN
+        // A. JIKA MEMILIH ORANG SPESIFIK
         if ($request->receiver_id) {
-            // A. KASUS SPESIFIK (1 ORANG)
             Message::create([
                 'sender_id' => $senderId,
                 'receiver_id' => $request->receiver_id,
                 'subject' => $request->subject,
-                'body' => $request->body,
+                
+                // PERBAIKAN DISINI:
+                // Input 'body' dari form -> Masuk ke kolom 'content' di Database
+                'content' => $request->body, 
+                
                 'status' => 'unread',
             ]);
             $count = 1;
 
         } else {
-            // B. KASUS BROADCAST
+            // B. JIKA BROADCAST
             $query = User::where('role', $request->receiver_role)
                          ->where('id', '!=', $senderId);
 
-            // FILTER TAMBAHAN: JIKA MEMILIH ANGKATAN
             if ($request->receiver_role == 'mahasiswa' && $request->filled('angkatan')) {
                 $query->where('angkatan', $request->angkatan);
             }
@@ -69,7 +76,10 @@ class MessageController extends Controller
                     'sender_id' => $senderId,
                     'receiver_id' => $receiver->id,
                     'subject' => $request->subject,
-                    'body' => $request->body,
+                    
+                    // PERBAIKAN DISINI JUGA:
+                    'content' => $request->body, 
+                    
                     'status' => 'unread',
                 ]);
             }
@@ -80,8 +90,63 @@ class MessageController extends Controller
             ->with('success', "Pesan berhasil dikirim ke $count orang!");
     }
 
-    // ... (Fungsi sent, show, destroy biarkan tetap sama seperti sebelumnya) ...
-    public function sent() { /* ... */ return view('messages.sent', compact('messages')); }
-    public function show($id) { /* ... */ return view('messages.show', compact('message')); }
-    public function destroy($id) { /* ... */ return back(); }
+    // 4. PESAN TERKIRIM
+    public function sent()
+    {
+        $messages = Message::where('sender_id', Auth::id())
+                            ->with('receiver')
+                            ->latest()
+                            ->get();
+
+        return view('messages.sent', compact('messages'));
+    }
+
+    // 5. BACA PESAN
+    public function show($id)
+    {
+        $message = Message::findOrFail($id);
+
+        if ($message->receiver_id !== Auth::id() && $message->sender_id !== Auth::id()) {
+            abort(403, 'Anda tidak berhak membaca pesan ini.');
+        }
+
+        if ($message->receiver_id === Auth::id() && $message->status === 'unread') {
+            $message->update(['status' => 'read']);
+        }
+
+        return view('messages.show', compact('message'));
+    }
+
+    // 6. UPDATE STATUS (Untuk Mahasiswa: Berlangsung/Selesai)
+    public function updateStatus(Request $request, $id)
+    {
+        $message = Message::findOrFail($id);
+
+        if ($message->receiver_id == Auth::id()) {
+            $message->update(['status' => $request->status]);
+            return response()->json(['success' => true]);
+        }
+        
+        return response()->json(['success' => false], 403);
+    }
+
+    // 7. HAPUS PESAN
+    public function destroy($id)
+    {
+        $message = Message::findOrFail($id);
+        
+        if ($message->receiver_id == Auth::id() || $message->sender_id == Auth::id()) {
+            $message->delete();
+            return back()->with('success', 'Pesan berhasil dihapus.');
+        }
+
+        return back()->with('error', 'Gagal menghapus pesan.');
+    }
+
+    // 8. HAPUS SEMUA (Inbox)
+    public function destroyAll()
+    {
+        Message::where('receiver_id', Auth::id())->delete();
+        return back()->with('success', 'Semua pesan masuk telah dihapus.');
+    }
 }

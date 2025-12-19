@@ -4,7 +4,7 @@
     
     <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Buat Pengumuman 📣</h1>
+            <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Buat Pengumuman</h1>
             <p class="text-gray-500 mt-1">Kirim pesan spesifik per angkatan atau broadcast umum.</p>
         </div>
         <a href="{{ route('dosen.dashboard') }}" class="inline-flex items-center text-sm font-bold hover:underline transition" style="color: #9F3E28;">
@@ -31,20 +31,14 @@
                         <label class="cursor-pointer relative group">
                             <input type="radio" name="receiver_role" value="dosen" class="peer sr-only" checked onclick="toggleOptions('dosen')">
                             <div class="p-4 rounded-xl bg-white border-2 border-transparent peer-checked:border-[#9F3E28] shadow-sm hover:shadow-md transition-all flex items-center gap-3">
-                                <div class="p-2 rounded-full bg-orange-50 text-orange-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                                </div>
-                                <span class="font-bold text-gray-700">Rekan Dosen / Staf</span>
+                                <span class="font-bold text-gray-700 ml-1">Rekan Dosen / Staf</span>
                             </div>
                         </label>
 
                         <label class="cursor-pointer relative group">
                             <input type="radio" name="receiver_role" value="mahasiswa" class="peer sr-only" onclick="toggleOptions('mahasiswa')">
                             <div class="p-4 rounded-xl bg-white border-2 border-transparent peer-checked:border-[#9F3E28] shadow-sm hover:shadow-md transition-all flex items-center gap-3">
-                                <div class="p-2 rounded-full bg-blue-50 text-blue-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /></svg>
-                                </div>
-                                <span class="font-bold text-gray-700">Mahasiswa</span>
+                                <span class="font-bold text-gray-700 ml-1">Mahasiswa</span>
                             </div>
                         </label>
                     </div>
@@ -71,9 +65,6 @@
 
                 <div>
                     <h3 class="font-bold text-gray-700 mb-3 text-sm uppercase tracking-wider flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
-                        </svg>
                         Template Cepat
                     </h3>
                     
@@ -81,18 +72,18 @@
                         <span class="px-2 py-1 bg-gray-100 text-[10px] font-bold text-gray-500 rounded uppercase self-center mr-1">Rapat:</span>
                         <button type="button" onclick="fillTemplate('Undangan Rapat Kurikulum', 'Kepada Yth. Bapak/Ibu Dosen,\n\nMohon kehadirannya dalam Rapat Evaluasi Kurikulum...')" 
                             class="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-bold hover:bg-blue-100 transition border border-blue-100">
-                            📘 Rapat Kurikulum
+                            Rapat Kurikulum
                         </button>
 
                         <div class="w-full md:w-auto md:hidden"></div>
                         <span class="px-2 py-1 bg-gray-100 text-[10px] font-bold text-gray-500 rounded uppercase self-center mr-1 ml-0 md:ml-4">Mhs:</span>
                         <button type="button" onclick="fillTemplate('Informasi Perubahan Jadwal Kuliah', 'Diberitahukan kepada seluruh mahasiswa angkatan [Tahun] bahwa mata kuliah...')" 
                             class="px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-xs font-bold hover:bg-green-100 transition border border-green-100">
-                            📢 Ubah Jadwal
+                            Ubah Jadwal
                         </button>
                         <button type="button" onclick="fillTemplate('Pengumpulan Tugas Akhir', 'Deadline pengumpulan Draft Tugas Akhir diperpanjang hingga...')" 
                             class="px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-xs font-bold hover:bg-green-100 transition border border-green-100">
-                            📚 Tugas Akhir
+                            Tugas Akhir
                         </button>
                     </div>
                 </div>
@@ -136,19 +127,15 @@
         const dosenOptions = document.getElementById('dosen-options');
 
         if (role === 'mahasiswa') {
-            // Tampilkan Dropdown Angkatan, Sembunyikan Checkbox Dosen
             angkatanContainer.classList.remove('hidden');
             dosenOptions.classList.add('hidden');
         } else {
-            // Tampilkan Checkbox Dosen, Sembunyikan Dropdown Angkatan
             angkatanContainer.classList.add('hidden');
             dosenOptions.classList.remove('hidden');
         }
     }
     
-    // Jalankan sekali saat load untuk memastikan state awal benar
     document.addEventListener("DOMContentLoaded", function() {
-        // Cek radio mana yang checked
         const checkedRadio = document.querySelector('input[name="receiver_role"]:checked');
         if(checkedRadio) {
             toggleOptions(checkedRadio.value);
@@ -161,7 +148,6 @@
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
     
-    /* Animasi Simpel */
     @keyframes fadeInDown {
         from { opacity: 0; transform: translateY(-10px); }
         to { opacity: 1; transform: translateY(0); }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 
 class DosenController extends Controller
 {
@@ -14,7 +13,6 @@ class DosenController extends Controller
      */
     public function index()
     {
-        // Ambil semua user yang role-nya 'dosen'
         $dosens = User::where('role', 'dosen')->latest()->get();
         return view('admin.dosen.index', compact('dosens'));
     }
@@ -36,7 +34,8 @@ class DosenController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // PERUBAHAN: Minimal 6 karakter & hapus 'confirmed' karena tidak ada kolom konfirmasi di form
+            'password' => ['required', 'string', 'min:6'],
         ]);
 
         // 2. Simpan ke Database
@@ -44,12 +43,10 @@ class DosenController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'dosen', // Set role otomatis jadi dosen
-            'angkatan' => null, // Dosen tidak punya angkatan, set null
-            // 'department_id' => 1,  <-- INI YANG BIKIN ERROR, KITA HAPUS
+            'role' => 'dosen',
+            'angkatan' => null,
         ]);
 
-        // 3. Kembali ke halaman index dengan pesan sukses
         return redirect()->route('dosen.index')->with('success', 'Dosen berhasil ditambahkan!');
     }
 
@@ -74,14 +71,14 @@ class DosenController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$dosen->id],
         ]);
 
-        // Update data dasar
         $dosen->name = $request->name;
         $dosen->email = $request->email;
 
         // Jika password diisi, update passwordnya
         if ($request->filled('password')) {
+            // PERUBAHAN: Validasi update password juga minimal 6 & tanpa konfirmasi
             $request->validate([
-                'password' => ['confirmed', Rules\Password::defaults()],
+                'password' => ['string', 'min:6'],
             ]);
             $dosen->password = Hash::make($request->password);
         }
